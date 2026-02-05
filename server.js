@@ -1,11 +1,20 @@
-const express = require('express')
+const app = require('./app')
 const dotenv = require('dotenv')
-
+const cors = require('cors')
 const connectDB = require('./config/db')
 
 dotenv.config()
 
-const app = express()
+// CORS
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'https://todo-fullstack-nine-tau.vercel.app'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  }),
+)
+
+// middleware
 
 // connect databasex`
 connectDB()
