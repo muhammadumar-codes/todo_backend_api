@@ -5,6 +5,10 @@ const connectDB = require('./config/db')
 
 dotenv.config()
 
+const dns = require('dns')
+
+dns.setServers(['8.8.8.8', '8.8.4.4'])
+
 // CORS
 app.use(
   cors({
@@ -14,8 +18,6 @@ app.use(
   }),
 )
 
-// middleware
-
 // connect databasex`
 connectDB()
 
@@ -24,5 +26,5 @@ app.use('/api/auth', require('./routes/auth.routes'))
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`)
+  console.log(` Server running on port ${PORT}`)
 })
