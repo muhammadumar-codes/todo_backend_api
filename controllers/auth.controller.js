@@ -2,6 +2,7 @@ const User = require('../models/user.model')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+// ====* Register *====
 const register = async (req, res) => {
   try {
     const { name, email, password } = req.body
@@ -38,10 +39,7 @@ const register = async (req, res) => {
     res.status(500).json({ message: 'Server error' })
   }
 }
-
-/**
- * LOGIN USER
- */
+// ====* Login *====
 const login = async (req, res) => {
   try {
     const { email, password } = req.body
@@ -75,10 +73,7 @@ const login = async (req, res) => {
     res.status(500).json({ message: 'Server error' })
   }
 }
-
-/**
- * GET ALL USERS (TEST ROUTE)
- */
+// ====* Get All Users *====
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password')
