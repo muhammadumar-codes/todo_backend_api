@@ -14,7 +14,7 @@ app.use('/api/todos', todoRoutes)
 
 // health check
 app.get('/', (req, res) => {
-  res.send('Todo Backend API is running 🚀')
+  res.send('Todo Backend API is running ')
 })
 
 module.exports = app
