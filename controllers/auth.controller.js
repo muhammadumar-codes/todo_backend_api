@@ -73,6 +73,7 @@ const login = async (req, res) => {
     res.status(500).json({ message: 'Server error' })
   }
 }
+
 // ====* Get All Users *====
 const getAllUsers = async (req, res) => {
   try {
