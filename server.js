@@ -1,29 +1,31 @@
+// server.js
+const express = require('express')
 const dotenv = require('dotenv')
 const cors = require('cors')
-const dns = require('dns')
-
 const connectDB = require('./config/db')
 const app = require('./app')
 
-dotenv.config()
-
+const dns = require('dns')
 dns.setServers(['8.8.8.8', '8.8.4.4'])
 
-const PORT = process.env.PORT
+dotenv.config()
 
-// CORS
+const PORT = process.env.PORT || 5000
+
 app.use(
   cors({
-    origin: ['http://localhost:5000', 'https://todo-fullstack-nine-tau.vercel.app'],
+    origin: ['http://localhost:5173', 'https://react-todo-phi-dusky.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   }),
 )
 
-// connect database
 connectDB()
 
-// start server
+app.get('/', (req, res) => {
+  res.send('Todo Backend API is running ')
+})
+
 app.listen(PORT, () => {
   console.log(` Server running on port ${PORT}`)
 })
