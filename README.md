@@ -8,6 +8,7 @@ Umar jani 💙 this document explains your **Todo Backend Application** from zer
 
 This backend is a **RESTful API** built with:
 
+<<<<<<< HEAD
 - **Node.js**
 - **Express.js**
 - **MongoDB (Mongoose)**
@@ -20,6 +21,20 @@ This backend is a **RESTful API** built with:
 - JWT-based Authentication
 - Create, Read, Update, Delete Todos
 - Admin/User dashboard support
+=======
+* **Node.js**
+* **Express.js**
+* **MongoDB (Mongoose)**
+* **JWT Authentication**
+* **Deployed on Vercel**
+
+### 🎯 Purpose
+
+* User Registration & Login
+* JWT-based Authentication
+* Create, Read, Update, Delete Todos
+
+>>>>>>> 777978ae0ce4ef583ec9cf536aa6c172ac1b2ec8
 
 ---
 
@@ -74,8 +89,13 @@ Connect backend to MongoDB Atlas.
 
 ### 🔹 Key Points
 
+<<<<<<< HEAD
 - Uses `mongoose.connect`
 - Handles connection errors
+=======
+* Uses `mongoose.connect`
+* Handles connection errors
+>>>>>>> 777978ae0ce4ef583ec9cf536aa6c172ac1b2ec8
 
 ---
 
@@ -85,10 +105,17 @@ Connect backend to MongoDB Atlas.
 
 Fields:
 
+<<<<<<< HEAD
 - `name` – String (required)
 - `email` – String (unique, required)
 - `password` – Hashed using bcrypt
 - `createdAt`
+=======
+* `name` – String (required)
+* `email` – String (unique, required)
+* `password` – Hashed using bcrypt
+* `createdAt`
+>>>>>>> 777978ae0ce4ef583ec9cf536aa6c172ac1b2ec8
 
 ---
 
@@ -96,10 +123,17 @@ Fields:
 
 Fields:
 
+<<<<<<< HEAD
 - `title` – String
 - `completed` – Boolean
 - `user` – ObjectId (reference to User)
 - `createdAt`
+=======
+* `title` – String
+* `completed` – Boolean
+* `user` – ObjectId (reference to User)
+* `createdAt`
+>>>>>>> 777978ae0ce4ef583ec9cf536aa6c172ac1b2ec8
 
 ---
 
@@ -123,11 +157,19 @@ Protect private routes.
 
 ### 🔹 How it Works
 
+<<<<<<< HEAD
 - Reads `Authorization: Bearer <token>` header
 - Verifies JWT
 - Adds `req.user`
 
 ❌ Without token → Access denied
+=======
+* Reads `Authorization: Bearer <token>` header
+* Verifies JWT
+* Adds `req.user`
+
+Without token → Access denied
+>>>>>>> 777978ae0ce4ef583ec9cf536aa6c172ac1b2ec8
 
 ---
 
@@ -218,9 +260,15 @@ DELETE /api/todos/:id
 
 ### 🔹 Purpose
 
+<<<<<<< HEAD
 - Initialize Express app
 - Add JSON middleware
 - Attach routes
+=======
+* Initialize Express app
+* Add JSON middleware
+* Attach routes
+>>>>>>> 777978ae0ce4ef583ec9cf536aa6c172ac1b2ec8
 
 ---
 
@@ -228,7 +276,38 @@ DELETE /api/todos/:id
 
 ### 🔹 Purpose
 
+<<<<<<< HEAD
 - Load env variables
 - Enable CORS
 - Connect database
 - Start server
+=======
+* Load env variables
+* Enable CORS
+* Connect database
+* Start server
+
+### 🔹 CORS Configuration
+
+Allows:
+
+* Localhost frontend
+* Vercel frontend
+
+---
+
+## 1️⃣1️⃣ CORS Explanation (Very Important)
+
+Why CORS is needed:
+
+* Backend & frontend are on **different domains**
+
+Example:
+
+* Backend → `todo-backend-api.vercel.app`
+* Frontend → `react-todo.vercel.app`
+
+CORS allows browser communication.
+
+---
+>>>>>>> 777978ae0ce4ef583ec9cf536aa6c172ac1b2ec8
