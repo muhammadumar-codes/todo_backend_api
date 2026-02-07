@@ -8,23 +8,44 @@ dns.setServers(['8.8.8.8', '8.8.4.4'])
 
 dotenv.config()
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000
 
+// Apply CORS with explicit handling for preflight
+app.use((req, res, next) => {
+  // Allow from all origins (or specify your frontend URLs)
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  )
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end()
+  }
+
+  next()
+})
+
+// Also use cors middleware as backup
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://your-frontend-domain.com'],
-    credentials: true,
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 )
 
 connectDB()
+
+// Add explicit OPTIONS handler for all routes
+app.options('*', cors())
 
 app.get('/', (req, res) => {
   res.send('Todo Backend API is running ')
 })
 
 app.listen(PORT, () => {
-  console.log(` Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
