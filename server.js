@@ -1,5 +1,3 @@
-// server.js
-const express = require('express')
 const dotenv = require('dotenv')
 const cors = require('cors')
 const connectDB = require('./config/db')
@@ -10,7 +8,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4'])
 
 dotenv.config()
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT
 
 app.use(
   cors({
