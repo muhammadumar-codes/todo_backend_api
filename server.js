@@ -39,9 +39,6 @@ app.use(
 
 connectDB()
 
-// Add explicit OPTIONS handler for all routes
-app.options('*', cors())
-
 app.get('/', (req, res) => {
   res.send('Todo Backend API is running ')
 })
