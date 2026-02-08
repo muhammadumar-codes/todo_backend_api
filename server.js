@@ -25,9 +25,8 @@ app.use(express.json())
 app.use(
   cors({
     origin: [
-      'http://localhost:5173',          // React local (Vite)
-      'http://localhost:3000',          // React CRA (optional)
-      'https://react-todo-phi-dusky.vercel.app', // Deployed frontend
+      'http://localhost:5173',          // React CRA (optional)
+      'https://react-todo-mu-amber.vercel.app/', // Deployed frontend
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
