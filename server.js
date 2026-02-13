@@ -2,52 +2,45 @@ const express = require('express')
 const dotenv = require('dotenv')
 const cors = require('cors')
 
-
-
 const connectDB = require('./config/db')
 
-
-
-
-
-
-// Load env variables
 dotenv.config()
 
-
 const app = express()
-
 
 // Parse JSON
 app.use(express.json())
 
-// CORS config (Frontend access)
+// Allowed Origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://react-todo-mu-amber.vercel.app',
+]
+
+// CORS Configuration
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',          // React CRA (optional)
-      'https://react-todo-mu-amber.vercel.app/', // Deployed frontend
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     credentials: true,
-  }),
+  })
 )
-
 
 connectDB()
 
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/todos', require('./routes/todo.routes'))
 
-// Health check
+// Health Check Route
 app.get('/', (req, res) => {
   res.send('🚀 Todo Backend API is running')
 })
 
-// =======================
-// Server
-// =======================
 const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
