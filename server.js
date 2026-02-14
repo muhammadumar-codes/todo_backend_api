@@ -14,7 +14,7 @@ app.use(express.json())
 // Allowed Origins
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://react-todo-five-henna.vercel.app',
+  'https://react-todo-five-ashen.vercel.app/',
 ]
 
 // CORS Configuration
