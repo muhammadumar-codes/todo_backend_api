@@ -1,4 +1,5 @@
 // =================== auth.controller.js ===================
+
 import User from '../models/user.model.js'
 import { comparePassword, hashPassword } from '../utils/hash.util.js'
 import { generateAccessToken } from '../utils/jwt.util.js'
@@ -14,26 +15,29 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' })
     }
 
+    // =====*** Normalize email to prevent duplicates ***=====
+    const normalizedEmail = email.toLowerCase()
+
     // =====*** Check if user already exists ***=====
-    const existingUser = await User.findOne({ email })
+    const existingUser = await User.findOne({ email: normalizedEmail })
     if (existingUser) {
       return res.status(409).json({ message: 'User already exists' })
     }
 
-    // =====*** Hash password before saving (IMPORTANT: add await) ***=====
+    // =====*** Hash password before saving to database ***=====
     const hashedPassword = await hashPassword(password)
 
     // =====*** Create new user in database ***=====
     const user = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
     })
 
-    // =====*** Generate JWT token using utility function ***=====
+    // =====*** Generate JWT access token ***=====
     const token = generateAccessToken({ userId: user._id })
 
-    // =====*** Send success response with token ***=====
+    // =====*** Send success response (never send password) ***=====
     res.status(201).json({
       message: 'User registered successfully',
       token,
@@ -44,6 +48,7 @@ const register = async (req, res) => {
       },
     })
   } catch (error) {
+    // =====*** Handle server errors ***=====
     res.status(500).json({ message: 'Server error' })
   }
 }
@@ -59,19 +64,22 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' })
     }
 
+    // =====*** Normalize email ***=====
+    const normalizedEmail = email.toLowerCase()
+
     // =====*** Find user by email ***=====
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email: normalizedEmail })
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' })
     }
 
-    // =====*** Compare password with hashed password (IMPORTANT: add await) ***=====
+    // =====*** Compare provided password with hashed password ***=====
     const isMatch = await comparePassword(password, user.password)
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' })
     }
 
-    // =====*** Generate JWT token using utility function ***=====
+    // =====*** Generate JWT access token ***=====
     const token = generateAccessToken({ userId: user._id })
 
     // =====*** Send success response ***=====
@@ -85,23 +93,10 @@ const login = async (req, res) => {
       },
     })
   } catch (error) {
+    // =====*** Handle server errors ***=====
     res.status(500).json({ message: 'Server error' })
   }
 }
 
-// =====*** Get All Users (excluding passwords) ***=====
-const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find().select('-password')
-
-    res.status(200).json({
-      success: true,
-      count: users.length,
-      users,
-    })
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch users' })
-  }
-}
-
-export { login, register, getAllUsers }
+// =====*** Export Auth Controllers ***=====
+export { register, login }

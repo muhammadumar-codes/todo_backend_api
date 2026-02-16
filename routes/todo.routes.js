@@ -1,26 +1,29 @@
-// =================== todo.routes.js ===================
-import express from 'express'
-const router = express.Router()
-
-import authMiddleware from '../middlewares/auth.middleware.js'
-
+import { validate } from '../middlewares/validate.middleware.js'
 import {
-  createTodo,
-  updateTodo,
-  getTodos,
-  deleteTodo,
-} from '../controllers/todo.controller.js'
+  createTodoSchema,
+  updateTodoSchema,
+  todoIdParamSchema,
+} from '../validations/todo.validation.js'
 
-// =====*** Protected route: Create new todo ***=====
-router.post('/', authMiddleware, createTodo)
+// =====*** Create Todo ***=====
+router.post('/', authMiddleware, validate(createTodoSchema), createTodo)
 
-// =====*** Protected route: Get all todos of logged-in user ***=====
+// =====*** Get Todos (No body validation needed) ***=====
 router.get('/', authMiddleware, getTodos)
 
-// =====*** Protected route: Update todo by ID ***=====
-router.put('/:id', authMiddleware, updateTodo)
+// =====*** Update Todo ***=====
+router.put(
+  '/:id',
+  authMiddleware,
+  validate(todoIdParamSchema, 'params'),
+  validate(updateTodoSchema),
+  updateTodo
+)
 
-// =====*** Protected route: Delete todo by ID ***=====
-router.delete('/:id', authMiddleware, deleteTodo)
-
-export default router
+// =====*** Delete Todo ***=====
+router.delete(
+  '/:id',
+  authMiddleware,
+  validate(todoIdParamSchema, 'params'),
+  deleteTodo
+)
