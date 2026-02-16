@@ -1,7 +1,6 @@
-const express = require('express')
-
-const authRoutes = require('./routes/auth.routes')
-const todoRoutes = require('./routes/todo.routes')
+import express from 'express'
+import todoRoutes from './routes/todo.routes.js'
+import authRoutes from './routes/auth.routes.js'
 
 const app = express()
 
@@ -17,4 +16,4 @@ app.get('/', (req, res) => {
   res.send('Todo Backend API is running ')
 })
 
-module.exports = app
+export default app

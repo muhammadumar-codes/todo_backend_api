@@ -1,16 +1,14 @@
-const express = require('express')
-const dotenv = require('dotenv')
-const cors = require('cors')
+import dotenv from 'dotenv'
+const PORT = process.env.PORT || 5000
+import cors from 'cors'
 
-const connectDB = require('./config/db')
+import dns from 'dns'
+import connectDB from './config/db.js'
+import app from './app.js'
 
 dotenv.config()
 
-const app = express()
-
-// Parse JSON
-app.use(express.json())
-
+dns.setServers(['8.8.8.8', '8.8.4.4'])
 // Allowed Origins
 const allowedOrigins = [
   'http://localhost:5173',
@@ -32,16 +30,6 @@ app.use(
 )
 
 connectDB()
-
-app.use('/api/auth', require('./routes/auth.routes'))
-app.use('/api/todos', require('./routes/todo.routes'))
-
-// Health Check Route
-app.get('/', (req, res) => {
-  res.send('🚀 Todo Backend API is running')
-})
-
-const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`)

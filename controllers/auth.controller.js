@@ -1,6 +1,6 @@
-const User = require('../models/user.model')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
+import User from '../models/user.model.js'
 
 // ====* Register *====
 const register = async (req, res) => {
@@ -24,7 +24,9 @@ const register = async (req, res) => {
       password: hashedPassword,
     })
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '7d',
+    })
 
     res.status(201).json({
       message: 'User registered successfully',
@@ -58,7 +60,9 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' })
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '7d',
+    })
 
     res.status(200).json({
       message: 'Login successful',
@@ -89,4 +93,4 @@ const getAllUsers = async (req, res) => {
   }
 }
 
-module.exports = { register, login, getAllUsers }
+export { login, register, getAllUsers }

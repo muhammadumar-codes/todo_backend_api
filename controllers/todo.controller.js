@@ -1,5 +1,4 @@
-const Todo = require('../models/todo.model')
-
+import Todo from '../models/todo.model.js'
 // ====* Create Todos *====
 const createTodo = async (req, res) => {
   try {
@@ -26,7 +25,9 @@ const createTodo = async (req, res) => {
 // ====* Get All Todos *====
 const getTodos = async (req, res) => {
   try {
-    const todos = await Todo.find({ user: req.user._id }).sort({ createdAt: -1 })
+    const todos = await Todo.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    })
 
     res.status(200).json({
       count: todos.length,
@@ -42,9 +43,13 @@ const updateTodo = async (req, res) => {
   try {
     const { id } = req.params
 
-    const todo = await Todo.findOneAndUpdate({ _id: id, user: req.user._id }, req.body, {
-      new: true,
-    })
+    const todo = await Todo.findOneAndUpdate(
+      { _id: id, user: req.user._id },
+      req.body,
+      {
+        new: true,
+      }
+    )
 
     if (!todo) {
       return res.status(404).json({ message: 'Todo not found' })
@@ -81,9 +86,4 @@ const deleteTodo = async (req, res) => {
   }
 }
 
-module.exports = {
-  createTodo,
-  getTodos,
-  updateTodo,
-  deleteTodo,
-}
+export { createTodo, getTodos, updateTodo, deleteTodo }

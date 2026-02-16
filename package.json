@@ -4,6 +4,7 @@
   "description": "Todo App Backend",
   "author": "Muhammad Umar",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "start": "start server.js",
     "dev": "nodemon server.js"
