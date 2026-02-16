@@ -1,21 +1,26 @@
+// =================== server.js ===================
 import dotenv from 'dotenv'
-const PORT = process.env.PORT || 5000
 import cors from 'cors'
-
 import dns from 'dns'
 import connectDB from './config/db.js'
 import app from './app.js'
 
+// =====*** Load environment variables from .env file ***=====
 dotenv.config()
 
+// =====*** Server port from env or default 5000 ***=====
+const PORT = process.env.PORT || 5000
+
+// =====*** Set DNS servers (Google DNS) ***=====
 dns.setServers(['8.8.8.8', '8.8.4.4'])
-// Allowed Origins
+
+// =====*** Allowed origins for CORS ***=====
 const allowedOrigins = [
   'http://localhost:5173',
   'https://react-todo-five-ashen.vercel.app',
 ]
 
-// CORS Configuration
+// =====*** CORS configuration to allow only allowed origins ***=====
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -29,8 +34,10 @@ app.use(
   })
 )
 
+// =====*** Connect to MongoDB ***=====
 connectDB()
 
+// =====*** Start Express server ***=====
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`)
 })
