@@ -1,140 +1,101 @@
 # 📝 Todo Backend API
 
-This repository contains the backend for a **Todo Application**, built step‑by‑step with scalability and real‑world usage in mind. The goal of this project is not just to make CRUD APIs, but to understand how **authentication, authorization, database design, and production deployment** work together.
+A secure and production-ready backend for a Todo Application built with Node.js, Express, MongoDB, and JWT authentication.
 
-This README is written in **plain, human language** so that anyone (including your future self) can understand the system without confusion.
-
----
-
-## What This Backend Does
-
-This backend provides:
-
-- User registration and login
-- Secure authentication using JWT
-- Protected routes for todos
-- Full CRUD operations on todos
-- Connection with MongoDB Atlas
-- Deployment-ready setup for Vercel
-
-In short: **only logged‑in users can manage their own todos**.
+This project demonstrates proper backend architecture including authentication, authorization, middleware structure, validation layer, and database design.
 
 ---
 
-## Tech Stack
+## Features
 
-- **Node.js** – JavaScript runtime
-- **Express.js** – Web framework
-- **MongoDB + Mongoose** – Database and ODM
-- **JWT (JSON Web Tokens)** – Authentication
-- **bcryptjs** – Password hashing
-- **CORS** – Frontend ↔ Backend communication
-- **Vercel** – Production deployment
+- ✅ User Registration
+- ✅ User Login
+- ✅ JWT Authentication
+- ✅ Password Hashing (bcryptjs)
+- ✅ Protected Routes
+- ✅ Full CRUD for Todos
+- ✅ Request Validation using Yup
+- ✅ MongoDB Atlas Integration
+- ✅ Clean and Scalable Project Structure
+
+> Only logged-in users can manage their own todos.
+
+---
+
+## 🛠 Tech Stack
+
+- **Node.js**
+- **Express.js**
+- **MongoDB + Mongoose**
+- **JWT (jsonwebtoken)**
+- **bcryptjs**
+- **Yup**
+- **CORS**
 
 ---
 
 ## 📁 Project Structure
 
-```
+```bash
 backend/
 │
 ├── config/
-│   └── db.js            # MongoDB connection logic
+│   └── db.js
 │
 ├── controllers/
-│   ├── auth.controller.js   # Register, login, users
-│   └── todo.controller.js   # Todo business logic
+│   ├── auth.controller.js
+│   └── todo.controller.js
 │
-├── middleware/
-│   └── auth.middleware.js   # JWT protection
+├── middlewares/
+│   ├── auth.middleware.js
+│   └── validate.middleware.js
 │
 ├── models/
-│   ├── user.model.js        # User schema
-│   └── todo.model.js        # Todo schema
+│   ├── user.model.js
+│   └── todo.model.js
 │
 ├── routes/
-│   ├── auth.routes.js       # Auth endpoints
-│   └── todo.routes.js       # Todo endpoints
+│   ├── auth.routes.js
+│   └── todo.routes.js
 │
-├── app.js                   # Express app setup
-├── server.js                # Server + production config
-├── .env                     # Environment variables
-└── package.json
+├── validations/
+│   ├── auth.validation.js
+│   └── todo.validation.js
+│
+├── utils/
+│   ├── hash.util.js
+│   └── jwt.util.js
+│
+├── app.js
+├── server.js
+└── .env
 ```
 
 ---
 
-## Environment Variables
+## 🔐 Environment Variables
 
 Create a `.env` file in the root directory:
 
-```
+```env
 PORT=5000
-MONGO_URI=your_mongodb_atlas_connection_string
+MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 ```
 
-These values are **never committed to GitHub** and must be set again in Vercel when deploying.
+⚠️ Never commit your `.env` file to GitHub.
 
 ---
 
-## Database Connection
-
-The database connection is handled in `config/db.js`.
-
-What happens here:
-
-- Mongoose connects to MongoDB Atlas
-- The app waits until the database is connected
-- If the connection fails, the server stops
-
-This prevents the backend from running in a broken state.
-
----
-
-## 👤 User Model
-
-The user schema defines how users are stored in the database.
-
-Main fields:
-
-- `name` – user’s full name
-- `email` – unique email address
-- `password` – hashed password (never plain text)
-- timestamps – created and updated time
-
-Passwords are **always hashed** before saving.
-
----
-
-## ✅ Todo Model
-
-Each todo belongs to a specific user.
-
-Fields:
-
-- `title` – short task title
-- `description` – optional details
-- `completed` – task status
-- `user` – reference to the user who owns the todo
-- timestamps
-
-This design ensures:
-
-> A user can only see and manage their own todos.
-
----
-
-## 🔑 Authentication Flow (JWT)
+## 🔑 Authentication Flow
 
 1. User registers or logs in
-2. Backend verifies credentials
-3. A JWT token is generated
-4. Token is sent to the frontend
-5. Frontend stores token (usually in `localStorage`)
-6. Token is sent with every protected request
+2. Password is hashed or compared
+3. JWT token is generated
+4. Token is sent to frontend
+5. Frontend sends token in Authorization header
 
-Example header:
+Example:
 
 ```
 Authorization: Bearer <token>
@@ -144,35 +105,46 @@ Authorization: Bearer <token>
 
 ## 🛡️ Auth Middleware
 
-The middleware checks:
+The authentication middleware:
 
-- Is a token provided?
-- Is the token valid?
+- Verifies JWT token
+- Finds the user
+- Attaches user to `req.user`
+- Protects private routes
 
-If valid:
-
-- `req.user` is attached
-- Request continues
-
-If not:
-
-- Access is denied
-
-This is what protects private routes like `/api/todos`.
+If token is invalid → 401 Unauthorized response.
 
 ---
 
-## 🔗 API Routes
+## ✅ Validation Layer
 
-### Auth Routes (`/api/auth`)
+Validation is handled using Yup schemas and a custom validation middleware.
 
-#### Register
+- Validates `req.body` and `req.params`
+- Returns 400 if invalid
+- Prevents controller from running if data is incorrect
+
+This keeps controllers clean and secure.
+
+---
+
+# 🔗 API Endpoints
+
+## 🔐 Auth Routes
+
+Base URL:
+
+```
+/api/auth
+```
+
+### Register
 
 ```
 POST /api/auth/register
 ```
 
-Request body:
+Request Body:
 
 ```json
 {
@@ -184,77 +156,54 @@ Request body:
 
 ---
 
-#### Login
+### Login
 
 ```
 POST /api/auth/login
 ```
 
-Returns a JWT token on success.
+Returns JWT token on success.
 
 ---
 
-#### Get All Users (Protected)
+## 📝 Todo Routes (Protected)
+
+Base URL:
 
 ```
-GET /api/auth/users
+/api/todos
 ```
 
-Requires Authorization header.
+All routes require Authorization header.
 
 ---
 
-### Todo Routes (`/api/todos`)
-
-All todo routes are protected.
-
-#### Create Todo
+### Create Todo
 
 ```
 POST /api/todos
 ```
 
-#### Get My Todos
+---
+
+### Get My Todos
 
 ```
 GET /api/todos
 ```
 
-#### Update Todo
+---
+
+### Update Todo
 
 ```
 PUT /api/todos/:id
 ```
 
-#### Delete Todo
+---
+
+### Delete Todo
 
 ```
 DELETE /api/todos/:id
 ```
-
----
-
-## ⚙️ app.js
-
-This file:
-
-- Creates the Express app
-- Enables JSON parsing
-- Attaches routes
-
-It does **not** start the server.
-
----
-
-## 🌍 server.js
-
-This file:
-
-- Loads environment variables
-- Enables CORS
-- Connects to MongoDB
-- Starts the server
-
-This separation keeps the code clean and production‑ready.
-
----
