@@ -1,5 +1,6 @@
 import * as yup from 'yup'
 
+// =================== REGISTER SCHEMA ===================
 export const registerSchema = yup.object({
   name: yup
     .string()
@@ -20,10 +21,6 @@ export const registerSchema = yup.object({
     .trim()
     .min(6, 'Password must be at least 6 characters')
     .max(50, 'Password cannot exceed 50 characters')
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]+$/,
-      'Password must contain at least one letter and one number'
-    )
     .required('Password is required'),
 
   confirmPassword: yup
@@ -33,8 +30,7 @@ export const registerSchema = yup.object({
     .required('Confirm password is required'),
 })
 
-// ================================* LOGIN SCHEMA *============================
-
+// =================== LOGIN SCHEMA ===================
 export const loginSchema = yup.object({
   email: yup
     .string()
