@@ -1,23 +1,22 @@
-const express = require('express')
-const dotenv = require('dotenv')
-const cors = require('cors')
+// =================== server.js ===================
+import dotenv from 'dotenv'
+import cors from 'cors'
+import connectDB from './config/db.js'
+import app from './app.js'
 
-const connectDB = require('./config/db')
-
+// =====*** Load environment variables from .env file ***=====
 dotenv.config()
 
-const app = express()
+// =====*** Server port from env or default 5000 ***=====
+const PORT = process.env.PORT || 5000
 
-// Parse JSON
-app.use(express.json())
-
-// Allowed Origins
+// =====*** Allowed origins for CORS ***=====
 const allowedOrigins = [
   'http://localhost:5173',
   'https://react-todo-five-ashen.vercel.app',
 ]
 
-// CORS Configuration
+// =====*** CORS configuration to allow only allowed origins ***=====
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -31,18 +30,10 @@ app.use(
   })
 )
 
+// =====*** Connect to MongoDB ***=====
 connectDB()
 
-app.use('/api/auth', require('./routes/auth.routes'))
-app.use('/api/todos', require('./routes/todo.routes'))
-
-// Health Check Route
-app.get('/', (req, res) => {
-  res.send('🚀 Todo Backend API is running')
-})
-
-const PORT = process.env.PORT || 5000
-
+// =====*** Start Express server ***=====
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`)
 })
