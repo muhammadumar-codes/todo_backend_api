@@ -1,17 +1,18 @@
 // =================== user.model.js ===================
+
 import mongoose from 'mongoose'
 
-// =====*** Define User schema ***=====
+// =====*** Define User schema with avatar fields for Cloudinary ***=====
 const userSchema = new mongoose.Schema(
   {
-    // =====*** User's full name (required) ***=====
+    // User full name
     name: {
       type: String,
       required: true,
       trim: true,
     },
 
-    // =====*** User email (required, unique, lowercase) ***=====
+    // User email (unique)
     email: {
       type: String,
       required: true,
@@ -19,15 +20,28 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    // =====*** User password (required, min length 6) ***=====
+    // User password (hashed)
     password: {
       type: String,
       required: true,
       minlength: 6,
     },
+
+    // Avatar URL stored from Cloudinary
+    avatar: {
+      type: String,
+      default: null,
+    },
+
+    // Cloudinary public_id (needed for delete/update)
+    avatarPublicId: {
+      type: String,
+      default: null,
+    },
   },
-  // =====*** Automatically add createdAt and updatedAt timestamps ***=====
-  { timestamps: true }
+  {
+    timestamps: true, // Automatically add createdAt and updatedAt
+  }
 )
 
 // =====*** Export User model ***=====
