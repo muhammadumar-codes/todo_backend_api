@@ -1,5 +1,6 @@
 // =================== todo.controller.js ===================
 import Todo from '../models/todo.model.js'
+import redisClient from '../config/redis.js' // ✅ Redis import
 
 // =====*** Create New Todo ***=====
 const createTodo = async (req, res) => {
@@ -19,6 +20,9 @@ const createTodo = async (req, res) => {
       user: req.user._id,
     })
 
+    // =====*** Clear Redis cache after creating new todo ***=====
+    await redisClient.del(`todos:${req.user._id}`)
+
     // =====*** Send success response with created todo ***=====
     res.status(201).json({
       message: 'Todo created successfully',
@@ -30,18 +34,35 @@ const createTodo = async (req, res) => {
   }
 }
 
-// =====*** Get All Todos for Logged-in User ***=====
+// =====*** Get All Todos for Logged-in User with Redis Caching ***=====
 const getTodos = async (req, res) => {
   try {
-    // =====*** Fetch todos for user and sort by creation date descending ***=====
+    const cacheKey = `todos:${req.user._id}`
+
+    // =====*** Check Redis cache first ***=====
+    const cachedTodos = await redisClient.get(cacheKey)
+    if (cachedTodos) {
+      console.log(' Todos fetched from Redis cache ⚡')
+      return res.status(200).json({
+        count: JSON.parse(cachedTodos).length,
+        todos: JSON.parse(cachedTodos),
+        source: 'cache',
+      })
+    }
+
+    // =====*** If not in cache → fetch from DB ***=====
     const todos = await Todo.find({ user: req.user._id }).sort({
       createdAt: -1,
     })
 
-    // =====*** Send todos with count ***=====
+    // =====*** Save fetched todos in Redis cache for 60 seconds ***=====
+    await redisClient.set(cacheKey, JSON.stringify(todos), { EX: 60 })
+
+    console.log(' Todos fetched from Database')
     res.status(200).json({
       count: todos.length,
       todos,
+      source: 'database',
     })
   } catch (error) {
     // =====*** Handle server errors ***=====
@@ -65,6 +86,9 @@ const updateTodo = async (req, res) => {
       return res.status(404).json({ message: 'Todo not found' })
     }
 
+    // =====*** Clear Redis cache after updating todo ***=====
+    await redisClient.del(`todos:${req.user._id}`)
+
     // =====*** Send success response with updated todo ***=====
     res.status(200).json({
       message: 'Todo updated',
@@ -87,6 +111,9 @@ const deleteTodo = async (req, res) => {
     if (!todo) {
       return res.status(404).json({ message: 'Todo not found' })
     }
+
+    // =====*** Clear Redis cache after deletion ***=====
+    await redisClient.del(`todos:${req.user._id}`)
 
     // =====*** Send success response after deletion ***=====
     res.status(200).json({
