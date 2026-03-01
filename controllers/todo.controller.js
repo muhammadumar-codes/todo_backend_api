@@ -1,6 +1,6 @@
 // =================== todo.controller.js ===================
 import Todo from '../models/todo.model.js'
-import redisClient from '../config/redis.js' // ✅ Redis import
+import redisClient from '../config/redis.js'
 
 // =====*** Create New Todo ***=====
 const createTodo = async (req, res) => {
